@@ -12,3 +12,6 @@ services:
   demo:
     <<: *app
     command: php bin/demo.php
+
+volumes:
+  vendor:
