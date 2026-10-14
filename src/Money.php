@@ -6,10 +6,7 @@ namespace Alcor\Payroll;
 
 use InvalidArgumentException;
 
-/**
- * Immutable monetary amount in integer cents. Floats are off-limits:
- * a payroll line cannot afford drifting fractions of a cent.
- */
+/** Amount in integer cents - floats drift, and payroll cannot afford that. */
 final readonly class Money
 {
     private const string PATTERN = '/^([+-]?)(?:\$\s*)?(\d{1,3}(?:,\d{3})*|\d+)(?:\.(\d{1,2}))?$/';

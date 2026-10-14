@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace Alcor\Payroll;
 
 /**
- * Aggregate root for one earning line.
- *
- * Invariant: manual corrections permanently outrank system recalculation.
- * History is append-only - mistakes are fixed by compensating adjustments.
+ * Invariant: manual corrections outrank system recalculation; history is append-only.
  */
 final class EarningLine
 {
@@ -25,9 +22,7 @@ final class EarningLine
         return new self($systemValue);
     }
 
-    /**
-     * Returns false when ignored because manual corrections take precedence.
-     */
+    /** Returns false when ignored: manual corrections take precedence. */
     public function recalculate(Money $newSystemValue): bool
     {
         if ($this->isFrozen()) {

@@ -8,10 +8,7 @@ use Alcor\Payroll\Exception\AdjustmentAmountCannotBeZeroException;
 use Alcor\Payroll\Exception\AdjustmentCommentCannotBeBlankException;
 use InvalidArgumentException;
 
-/**
- * One recorded correction: ordinal, signed non-zero amount, mandatory comment.
- * Immutable and self-validating.
- */
+/** One recorded correction: ordinal, signed non-zero amount, mandatory comment. */
 final readonly class ManualAdjustment
 {
     public function __construct(

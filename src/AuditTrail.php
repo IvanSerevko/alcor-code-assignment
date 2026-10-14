@@ -6,10 +6,7 @@ namespace Alcor\Payroll;
 
 use InvalidArgumentException;
 
-/**
- * Immutable projection of a line: frozen system value and ordered adjustments.
- * The current value is always derived, never stored, so it cannot drift.
- */
+/** Frozen system value + ordered adjustments; current value is derived, never stored. */
 final readonly class AuditTrail
 {
     /** @var list<ManualAdjustment> */

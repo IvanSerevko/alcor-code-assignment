@@ -7,10 +7,7 @@ use Alcor\Payroll\Money;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-/**
- * CLI walkthrough of the assignment scenario: builds a line, runs all eight
- * steps, prints the resulting audit history.
- */
+// CLI walkthrough of the worked example from the assignment brief.
 
 $signed = static function (Money $amount): string {
     return ($amount->isPositive() ? '+' : '') . $amount->format();
@@ -26,23 +23,18 @@ echo "History of manual adjustments to an earning line\n\n";
 printf("%-4s %-10s %12s  %s\n", 'Step', 'Amount', 'Current', 'Event');
 printf("%s\n", str_repeat('-', 100));
 
-// Step 1: system calculates the line.
 $row(1, '—', $line->currentValue(), 'System calculates the line');
 
-// Step 2: source data changes; recalculation is still allowed.
 $line->recalculate(Money::fromDecimalString('1050.00'));
 $row(2, '—', $line->currentValue(), 'Source data changes, system recalculates (no manual correction yet)');
 
-// Step 3: first manual correction freezes the system value.
 $declined = Money::fromDecimalString('-45.55');
 $line->applyAdjustment($declined, 'Employee declined dental benefit; reversing deduction');
 $row(3, $signed($declined), $line->currentValue(), 'Manual correction; system value frozen at $1,050.00');
 
-// Step 4: recalculation attempt must be ignored.
 $line->recalculate(Money::fromDecimalString('1075.00'));
 $row(4, '—', $line->currentValue(), 'System attempts to recalculate (ignored: line already manually corrected)');
 
-// Steps 5-8: further corrections, including a compensating one.
 $corrections = [
     [5, Money::fromDecimalString('100.10'), 'Late correction: missed approved overtime bonus'],
     [6, Money::fromDecimalString('-0.10'), 'Minor rounding adjustment'],
