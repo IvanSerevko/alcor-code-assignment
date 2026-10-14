@@ -7,7 +7,7 @@ with an audit history that can never be rewritten.
 ## Run it
 
 ```bash
-composer install && vendor/bin/phpunit   # 45 unit tests + 1 scenario test
+composer install && vendor/bin/phpunit   # 42 tests: units + the brief's worked example
 php bin/demo.php
 ```
 
@@ -43,20 +43,20 @@ docker compose run --rm demo
 
 ## Design notes
 
+- **Rule of least power / YAGNI.** The brief never mentions currencies, so money
+  is a plain cents amount. No exchange rates, no currency pairs, no speculative
+  abstractions - every method on the value objects exists because a stated
+  business rule or the demo needs it.
 - **No Event Sourcing.** The brief allows a simpler OO design; what the rules
   need is an append-only trail of corrections, which is exactly the adjustment
   list inside the aggregate. ES machinery (serialised events, replay) would add
-  no strength to any required rule. If this grew, the same list could be stored
-  as an event stream behind a repository without touching the domain rules.
+  no strength to any required rule.
 - **`recalculate()` ignores, never throws.** "Must be ignored" is normal flow,
   so the method is total and returns a bool the caller can log.
-- **Two variants exist by intent:** `master` is the lean, review-first solution;
-  branch `variant-full` additionally models currency-tagged money, cross-currency
-  guards and expanded rationale, kept to show the trade-off thinking.
 
 ## Assumptions
 
-- Single currency (USD) per line; multi-currency handling lives in `variant-full`.
+- Single currency (USD) throughout, as implied by the brief's examples.
 - No persistence layer - in-memory aggregate; `(systemValue, adjustments)` is
   sufficient to reconstruct the line since values are derived.
 - Zero corrections are invalid ("positive or negative" per the brief).
