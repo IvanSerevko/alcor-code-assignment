@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Alcor\Payroll\Tests\Unit;
 
-use Alcor\Payroll\Exception\MismatchedCurrenciesException;
 use Alcor\Payroll\Money;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -12,7 +11,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Money::class)]
-#[CoversClass(MismatchedCurrenciesException::class)]
 final class MoneyTest extends TestCase
 {
     public static function decimalAmounts(): array
@@ -58,20 +56,6 @@ final class MoneyTest extends TestCase
         Money::fromDecimalString($input);
     }
 
-    public function testRejectsCurrencySymbolThatDoesNotMatchCurrency(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        Money::fromDecimalString('$45.55', 'EUR');
-    }
-
-    public function testRejectsCurrencyCodeThatIsNotUppercaseIso4217(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        Money::fromCents(100, 'usd');
-    }
-
     public function testSubtractingAdjustmentKeepsExactCentPrecision(): void
     {
         $base = Money::fromDecimalString('1050.00');
@@ -90,19 +74,11 @@ final class MoneyTest extends TestCase
         self::assertTrue($base->equals($base->plus($adjustment)->minus($adjustment)));
     }
 
-    public function testRefusesToCombineDifferentCurrencies(): void
-    {
-        $this->expectException(MismatchedCurrenciesException::class);
-
-        Money::fromCents(100)->plus(Money::fromCents(100, 'EUR'));
-    }
-
-    public function testNegateFlipsSignAndKeepsCurrency(): void
+    public function testNegateFlipsSign(): void
     {
         $amount = Money::fromDecimalString('100.10');
 
         self::assertSame(-10010, $amount->negate()->cents);
-        self::assertSame('USD', $amount->negate()->currency);
     }
 
     public function testArithmeticNeverMutatesOperands(): void
@@ -125,7 +101,7 @@ final class MoneyTest extends TestCase
     #[DataProvider('signClassification')]
     public function testSignClassification(int $cents, bool $isZero, bool $isNegative, bool $isPositive): void
     {
-        $amount = Money::fromCents($cents);
+        $amount = new Money($cents);
 
         self::assertSame($isZero, $amount->isZero());
         self::assertSame($isNegative, $amount->isNegative());
@@ -137,7 +113,6 @@ final class MoneyTest extends TestCase
         self::assertSame('$1,104.45', Money::fromDecimalString('1104.45')->format());
         self::assertSame('-$45.55', Money::fromDecimalString('-45.55')->format());
         self::assertSame('$1,050.00', Money::fromDecimalString('1050.00')->format());
-        self::assertSame('€0.10', Money::fromCents(10, 'EUR')->format());
     }
 
     public function testToDecimalStringRoundTripsThroughParser(): void

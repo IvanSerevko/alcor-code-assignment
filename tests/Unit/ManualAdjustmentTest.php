@@ -44,7 +44,7 @@ final class ManualAdjustmentTest extends TestCase
     {
         $this->expectException(AdjustmentAmountCannotBeZeroException::class);
 
-        new ManualAdjustment(1, Money::fromCents(0), 'No-op');
+        new ManualAdjustment(1, new Money(0), 'No-op');
     }
 
     public function testRejectsBlankComment(): void

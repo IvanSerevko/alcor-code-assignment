@@ -6,7 +6,6 @@ namespace Alcor\Payroll\Tests\Unit;
 
 use Alcor\Payroll\EarningLine;
 use Alcor\Payroll\Exception\AdjustmentCommentCannotBeBlankException;
-use Alcor\Payroll\Exception\MismatchedCurrenciesException;
 use Alcor\Payroll\Money;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -79,22 +78,6 @@ final class EarningLineTest extends TestCase
 
         EarningLine::fromSystemValue(Money::fromDecimalString('1000.00'))
             ->applyAdjustment(Money::fromDecimalString('10.00'), ' ');
-    }
-
-    public function testRejectsAdjustmentInDifferentCurrency(): void
-    {
-        $this->expectException(MismatchedCurrenciesException::class);
-
-        EarningLine::fromSystemValue(Money::fromDecimalString('1000.00'))
-            ->applyAdjustment(Money::fromCents(500, 'EUR'), 'Wrong currency');
-    }
-
-    public function testRejectsRecalculationInDifferentCurrency(): void
-    {
-        $this->expectException(MismatchedCurrenciesException::class);
-
-        EarningLine::fromSystemValue(Money::fromDecimalString('1000.00'))
-            ->recalculate(Money::fromCents(500, 'EUR'));
     }
 
     public function testExposesOnlyAppendOnlyOperations(): void

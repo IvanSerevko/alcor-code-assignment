@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Alcor\Payroll;
 
-use Alcor\Payroll\Exception\MismatchedCurrenciesException;
 use InvalidArgumentException;
 
 /**
@@ -13,33 +12,14 @@ use InvalidArgumentException;
  */
 final readonly class Money
 {
-    public const string DEFAULT_CURRENCY = 'USD';
-
-    private const array SYMBOLS = [
-        'USD' => '$',
-        'EUR' => '€',
-        'GBP' => '£',
-    ];
-
-    private const string PATTERN = '/^([+-]?)(?:(\$|€|£)\s*)?(\d{1,3}(?:,\d{3})*|\d+)(?:\.(\d{1,2}))?$/u';
+    private const string PATTERN = '/^([+-]?)(?:\$\s*)?(\d{1,3}(?:,\d{3})*|\d+)(?:\.(\d{1,2}))?$/';
 
     public function __construct(
         public int $cents,
-        public string $currency = self::DEFAULT_CURRENCY,
     ) {
-        if (preg_match('/^[A-Z]{3}$/', $currency) !== 1) {
-            throw new InvalidArgumentException(
-                sprintf('Currency "%s" must be an uppercase ISO 4217 three-letter code.', $currency)
-            );
-        }
     }
 
-    public static function fromCents(int $cents, string $currency = self::DEFAULT_CURRENCY): self
-    {
-        return new self($cents, $currency);
-    }
-
-    public static function fromDecimalString(string $decimal, string $currency = self::DEFAULT_CURRENCY): self
+    public static function fromDecimalString(string $decimal): self
     {
         if (preg_match(self::PATTERN, trim($decimal), $matches) !== 1) {
             throw new InvalidArgumentException(
@@ -47,36 +27,25 @@ final readonly class Money
             );
         }
 
-        [$symbol, $whole, $fraction] = [$matches[2], $matches[3], $matches[4] ?? ''];
+        $cents = (int) str_replace(',', '', $matches[2]) * 100
+            + (int) str_pad($matches[3] ?? '', 2, '0');
 
-        if ($symbol !== '' && $symbol !== (self::SYMBOLS[$currency] ?? '')) {
-            throw new InvalidArgumentException(
-                sprintf('Amount "%s" carries a symbol that does not match currency %s.', $decimal, $currency)
-            );
-        }
-
-        $cents = (int) str_replace(',', '', $whole) * 100 + (int) str_pad($fraction, 2, '0');
-
-        return new self($matches[1] === '-' ? -$cents : $cents, $currency);
+        return new self($matches[1] === '-' ? -$cents : $cents);
     }
 
     public function plus(self $other): self
     {
-        $this->assertSameCurrency($other);
-
-        return new self($this->cents + $other->cents, $this->currency);
+        return new self($this->cents + $other->cents);
     }
 
     public function minus(self $other): self
     {
-        $this->assertSameCurrency($other);
-
-        return new self($this->cents - $other->cents, $this->currency);
+        return new self($this->cents - $other->cents);
     }
 
     public function negate(): self
     {
-        return new self(-$this->cents, $this->currency);
+        return new self(-$this->cents);
     }
 
     public function isZero(): bool
@@ -110,8 +79,7 @@ final readonly class Money
     {
         $absolute = abs($this->cents);
         $body = sprintf(
-            '%s%s.%02d',
-            self::SYMBOLS[$this->currency] ?? $this->currency . ' ',
+            '$%s.%02d',
             number_format(intdiv($absolute, 100), 0, '', ','),
             $absolute % 100,
         );
@@ -121,13 +89,6 @@ final readonly class Money
 
     public function equals(self $other): bool
     {
-        return $this->cents === $other->cents && $this->currency === $other->currency;
-    }
-
-    private function assertSameCurrency(self $other): void
-    {
-        if ($this->currency !== $other->currency) {
-            throw MismatchedCurrenciesException::between($this->currency, $other->currency);
-        }
+        return $this->cents === $other->cents;
     }
 }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Alcor\Payroll;
 
-use Alcor\Payroll\Exception\MismatchedCurrenciesException;
-
 /**
  * Aggregate root for one earning line.
  *
@@ -36,7 +34,6 @@ final class EarningLine
             return false;
         }
 
-        $this->assertSameCurrency($newSystemValue);
         $this->systemValue = $newSystemValue;
 
         return true;
@@ -44,8 +41,6 @@ final class EarningLine
 
     public function applyAdjustment(Money $amount, string $comment): ManualAdjustment
     {
-        $this->assertSameCurrency($amount);
-
         $adjustment = new ManualAdjustment(
             ordinal: count($this->adjustments) + 1,
             amount: $amount,
@@ -70,12 +65,5 @@ final class EarningLine
     public function isFrozen(): bool
     {
         return $this->adjustments !== [];
-    }
-
-    private function assertSameCurrency(Money $amount): void
-    {
-        if ($amount->currency !== $this->systemValue->currency) {
-            throw MismatchedCurrenciesException::between($this->systemValue->currency, $amount->currency);
-        }
     }
 }
