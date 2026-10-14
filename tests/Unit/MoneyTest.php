@@ -65,22 +65,6 @@ final class MoneyTest extends TestCase
         self::assertTrue($base->plus($adjustment)->equals(Money::fromDecimalString('1004.45')));
     }
 
-    public function testMinusInvertsPlus(): void
-    {
-        $base = Money::fromDecimalString('1104.45');
-        $adjustment = Money::fromDecimalString('-0.20');
-
-        self::assertSame(110425, $base->plus($adjustment)->cents);
-        self::assertTrue($base->equals($base->plus($adjustment)->minus($adjustment)));
-    }
-
-    public function testNegateFlipsSign(): void
-    {
-        $amount = Money::fromDecimalString('100.10');
-
-        self::assertSame(-10010, $amount->negate()->cents);
-    }
-
     public function testArithmeticNeverMutatesOperands(): void
     {
         $base = Money::fromDecimalString('1050.00');
@@ -92,19 +76,18 @@ final class MoneyTest extends TestCase
     public static function signClassification(): array
     {
         return [
-            'zero' => [0, true, false, false],
-            'negative' => [-1, false, true, false],
-            'positive' => [1, false, false, true],
+            'zero' => [0, true, false],
+            'negative' => [-1, false, false],
+            'positive' => [1, false, true],
         ];
     }
 
     #[DataProvider('signClassification')]
-    public function testSignClassification(int $cents, bool $isZero, bool $isNegative, bool $isPositive): void
+    public function testSignClassification(int $cents, bool $isZero, bool $isPositive): void
     {
         $amount = new Money($cents);
 
         self::assertSame($isZero, $amount->isZero());
-        self::assertSame($isNegative, $amount->isNegative());
         self::assertSame($isPositive, $amount->isPositive());
     }
 
@@ -113,13 +96,5 @@ final class MoneyTest extends TestCase
         self::assertSame('$1,104.45', Money::fromDecimalString('1104.45')->format());
         self::assertSame('-$45.55', Money::fromDecimalString('-45.55')->format());
         self::assertSame('$1,050.00', Money::fromDecimalString('1050.00')->format());
-    }
-
-    public function testToDecimalStringRoundTripsThroughParser(): void
-    {
-        $amount = Money::fromDecimalString('-$1,234.56');
-
-        self::assertSame('-1234.56', $amount->toDecimalString());
-        self::assertTrue($amount->equals(Money::fromDecimalString($amount->toDecimalString())));
     }
 }

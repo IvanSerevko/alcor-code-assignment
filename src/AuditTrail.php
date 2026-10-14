@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Alcor\Payroll;
 
-use Countable;
 use InvalidArgumentException;
 
 /**
- * Immutable projection of a line: frozen system value, ordered adjustments,
- * and the current value - always derived, never stored, so it cannot drift.
+ * Immutable projection of a line: frozen system value and ordered adjustments.
+ * The current value is always derived, never stored, so it cannot drift.
  */
-final readonly class AuditTrail implements Countable
+final readonly class AuditTrail
 {
     /** @var list<ManualAdjustment> */
     public array $adjustments;
@@ -45,15 +44,5 @@ final readonly class AuditTrail implements Countable
         }
 
         return $value;
-    }
-
-    public function hasAdjustments(): bool
-    {
-        return $this->adjustments !== [];
-    }
-
-    public function count(): int
-    {
-        return count($this->adjustments);
     }
 }

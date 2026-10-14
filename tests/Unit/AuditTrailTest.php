@@ -19,8 +19,6 @@ final class AuditTrailTest extends TestCase
         $trail = new AuditTrail(Money::fromDecimalString('1050.00'), []);
 
         self::assertTrue($trail->currentValue()->equals(Money::fromDecimalString('1050.00')));
-        self::assertFalse($trail->hasAdjustments());
-        self::assertCount(0, $trail);
     }
 
     public function testCurrentValueIsDerivedFromFrozenBaseAndAllAdjustments(): void
@@ -37,8 +35,6 @@ final class AuditTrailTest extends TestCase
         );
 
         self::assertTrue($trail->currentValue()->equals(Money::fromDecimalString('1104.45')));
-        self::assertTrue($trail->hasAdjustments());
-        self::assertCount(5, $trail);
     }
 
     public function testRejectsTrailWithOrdinalGaps(): void

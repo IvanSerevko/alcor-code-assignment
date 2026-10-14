@@ -33,9 +33,4 @@ final readonly class ManualAdjustment
             throw new AdjustmentCommentCannotBeBlankException();
         }
     }
-
-    public function isNegative(): bool
-    {
-        return $this->amount->isNegative();
-    }
 }

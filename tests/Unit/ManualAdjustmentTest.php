@@ -25,7 +25,6 @@ final class ManualAdjustmentTest extends TestCase
 
         self::assertSame(3, $adjustment->ordinal);
         self::assertSame(-10, $adjustment->amount->cents);
-        self::assertTrue($adjustment->isNegative());
     }
 
     public function testAcceptsPositiveCompensatingAdjustment(): void
@@ -37,7 +36,6 @@ final class ManualAdjustmentTest extends TestCase
         );
 
         self::assertSame(20, $adjustment->amount->cents);
-        self::assertFalse($adjustment->isNegative());
     }
 
     public function testRejectsZeroAmount(): void

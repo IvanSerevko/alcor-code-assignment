@@ -38,41 +38,14 @@ final readonly class Money
         return new self($this->cents + $other->cents);
     }
 
-    public function minus(self $other): self
-    {
-        return new self($this->cents - $other->cents);
-    }
-
-    public function negate(): self
-    {
-        return new self(-$this->cents);
-    }
-
     public function isZero(): bool
     {
         return $this->cents === 0;
     }
 
-    public function isNegative(): bool
-    {
-        return $this->cents < 0;
-    }
-
     public function isPositive(): bool
     {
         return $this->cents > 0;
-    }
-
-    public function toDecimalString(): string
-    {
-        $absolute = abs($this->cents);
-
-        return sprintf(
-            '%s%d.%02d',
-            $this->cents < 0 ? '-' : '',
-            intdiv($absolute, 100),
-            $absolute % 100,
-        );
     }
 
     public function format(): string
