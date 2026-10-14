@@ -8,12 +8,8 @@ use Countable;
 use InvalidArgumentException;
 
 /**
- * Immutable projection of an earning line: the system value that was frozen
- * when the line became manually managed, the ordered adjustments on top of
- * it, and the derived current value.
- *
- * The current value is always computed, never stored, so the projection can
- * never drift from the records it is built from.
+ * Immutable projection of a line: frozen system value, ordered adjustments,
+ * and the current value - always derived, never stored, so it cannot drift.
  */
 final readonly class AuditTrail implements Countable
 {

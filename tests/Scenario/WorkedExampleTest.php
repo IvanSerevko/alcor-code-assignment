@@ -10,10 +10,7 @@ use Alcor\Payroll\Money;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * End-to-end reproduction of the worked example from the assignment,
- * including every intermediate expected value and the final audit table.
- */
+/** Reproduces the worked example from the assignment brief, steps 1-8. */
 #[CoversClass(EarningLine::class)]
 final class WorkedExampleTest extends TestCase
 {

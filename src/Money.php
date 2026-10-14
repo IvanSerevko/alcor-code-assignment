@@ -8,12 +8,8 @@ use Alcor\Payroll\Exception\MismatchedCurrenciesException;
 use InvalidArgumentException;
 
 /**
- * Immutable monetary amount stored in integer minor units (cents).
- *
- * Minor units are deliberate: float arithmetic on money silently loses or
- * invents fractions of a cent, which is exactly what a payroll line cannot
- * afford. Parsing accepts display strings ("$1,050.00", "-$45.55") and
- * rejects anything that cannot be represented in cents without rounding.
+ * Immutable monetary amount in integer cents. Floats are off-limits:
+ * a payroll line cannot afford drifting fractions of a cent.
  */
 final readonly class Money
 {
@@ -110,9 +106,6 @@ final readonly class Money
         );
     }
 
-    /**
-     * Human-readable form for audit output, e.g. "$1,104.45" or "-$45.55".
-     */
     public function format(): string
     {
         $absolute = abs($this->cents);

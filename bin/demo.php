@@ -8,10 +8,8 @@ use Alcor\Payroll\Money;
 require __DIR__ . '/../vendor/autoload.php';
 
 /**
- * CLI demonstration of the payroll earning-line domain model, running the
- * exact scenario from the assignment brief. Run with:
- *
- *   php bin/demo.php
+ * CLI walkthrough of the assignment scenario: builds a line, runs all eight
+ * steps, prints the resulting audit history.
  */
 
 $signed = static function (Money $amount): string {

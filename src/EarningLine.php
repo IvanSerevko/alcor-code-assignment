@@ -7,14 +7,10 @@ namespace Alcor\Payroll;
 use Alcor\Payroll\Exception\MismatchedCurrenciesException;
 
 /**
- * Aggregate root for one earning line on a payslip.
+ * Aggregate root for one earning line.
  *
- * Central invariant of the payroll business case: the specialist's manual
- * corrections permanently outrank automatic system recalculation. From the
- * first adjustment onwards the line freezes its system value, recalculations
- * are ignored, and the value can only ever move through new append-only
- * adjustments. There is no API to edit or remove an adjustment — mistakes are
- * fixed by compensating adjustments, which keeps the audit history truthful.
+ * Invariant: manual corrections permanently outrank system recalculation.
+ * History is append-only - mistakes are fixed by compensating adjustments.
  */
 final class EarningLine
 {
@@ -32,9 +28,7 @@ final class EarningLine
     }
 
     /**
-     * Applies the system's recalculation, unless manual corrections have
-     * taken precedence. Per the business rules this is ignored, not an error:
-     * the caller learns via the return value whether anything was applied.
+     * Returns false when ignored because manual corrections take precedence.
      */
     public function recalculate(Money $newSystemValue): bool
     {

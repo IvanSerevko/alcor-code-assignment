@@ -9,12 +9,8 @@ use Alcor\Payroll\Exception\AdjustmentCommentCannotBeBlankException;
 use InvalidArgumentException;
 
 /**
- * A single, once-recorded manual correction of an earning line.
- *
- * Deliberately immutable and self-validating: an adjustment that made it into
- * the ledger is always non-zero and always carries a reason. Corrections to
- * mistakes are modelled as new compensating adjustments, never by editing
- * this record.
+ * One recorded correction: ordinal, signed non-zero amount, mandatory comment.
+ * Immutable and self-validating.
  */
 final readonly class ManualAdjustment
 {
