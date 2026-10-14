@@ -1,0 +1,14 @@
+x-app: &app
+  build: .
+  volumes:
+    - .:/app
+    - vendor:/app/vendor
+
+services:
+  test:
+    <<: *app
+    command: vendor/bin/phpunit
+
+  demo:
+    <<: *app
+    command: php bin/demo.php
