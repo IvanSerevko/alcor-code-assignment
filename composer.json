@@ -1,0 +1,25 @@
+{
+    "name": "ivan-serevko/alcor-code-assignment",
+    "description": "Domain model for an earning line with a traceable history of manual adjustments",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Alcor\\Payroll\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Alcor\\Payroll\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
